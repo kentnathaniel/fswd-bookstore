@@ -43,7 +43,7 @@ async function createNewBook(data) {
 async function getBookDetail(id) {
   try {
     const response = await instance.get(`/books/${id}`);
-    return response;
+    return response.data;
   } catch (error) {
     throw new Error(error.response.data.message || "Something went wrong");
   }

@@ -12,30 +12,22 @@ import {
 } from "@chakra-ui/react";
 import Layout from "@components/Layout";
 import { PATH } from "@constants/path";
+import { QUERY_KEY } from "@constants/queryKey";
 import { deleteBookById, getBookDetail } from "@fetcher/index";
 import { delay } from "@utils/index";
 import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 
 function DetailPage() {
-  const [book, setBook] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const navigation = useNavigate();
   const toast = useToast();
 
-  useEffect(() => {
-    const fetchBook = async () => {
-      try {
-        const res = await getBookDetail(id);
-        await delay(500);
-        setBook(res.book);
-        setIsLoading(false);
-      } catch (e) {}
-    };
+  const queryKey = [QUERY_KEY.detailBook, id];
+  const { data, isLoading } = useQuery(queryKey, () => getBookDetail(id), { enabled: !!id });
 
-    fetchBook();
-  }, [id]);
+  const { book } = data || {};
 
   const onDelete = async () => {
     try {
